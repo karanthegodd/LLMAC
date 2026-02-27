@@ -1,0 +1,235 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* IIMAC Brand Kit - design system.
+ * Colors: IIM Royal Blue #1F4C8A, Maple Gold #F6A21E, Maroon Accent #7B2E2E,
+ * Sunburst Orange #E36414, Deep Navy #0D1B2A, Warm Cream White #FAF7F2
+ */
+
+@layer base {
+  :root {
+    /* Warm Cream White #FAF7F2 - Brand Kit background */
+    --background: 38 43% 96.5%;
+    --foreground: 212 53% 11%;
+
+    --card: 38 43% 96.5%;
+    --card-foreground: 212 53% 11%;
+
+    --popover: 38 43% 96.5%;
+    --popover-foreground: 212 53% 11%;
+
+    /* IIM Royal Blue #1F4C8A - Professional, stable, academic */
+    --primary: 214 63% 33%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Maple Gold #F6A21E - Warm, optimistic highlight */
+    --secondary: 38 92% 54%;
+    --secondary-foreground: 212 53% 11%;
+
+    --muted: 38 20% 94%;
+    --muted-foreground: 214 20% 40%;
+
+    /* Maroon Accent #7B2E2E - Dignified, strong for headers */
+    --accent: 0 46% 33%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Sunburst Orange #E36414 - Warmth and energy */
+    --sunburst-orange: 24 84% 48%;
+
+    /* Deep Navy #0D1B2A - Hero backgrounds, buttons */
+    --deep-navy: 212 53% 11%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 38 20% 90%;
+    --input: 38 20% 90%;
+    --ring: 214 63% 33%;
+
+    --radius: 0.75rem;
+
+    /* Brand Kit gradient: Royal Blue → Maple Gold (135deg) */
+    --gradient-primary: linear-gradient(135deg, #1F4C8A, #F6A21E);
+    --gradient-hero: linear-gradient(180deg, hsl(212 53% 11% / 0.03), hsl(38 43% 96.5%));
+    /* Campus Arrival: soft paper background, gentle shadows */
+    --paper: 40 33% 97%;
+    --shadow-soft: 0 4px 24px -4px hsl(214 63% 33% / 0.08);
+    --shadow-card: 0 8px 32px -8px hsl(214 63% 33% / 0.12);
+    --shadow-elegant: 0 10px 30px -10px hsl(214 63% 33% / 0.2);
+    --shadow-glow-gold: 0 0 30px hsl(38 92% 54% / 0.5);
+    --shadow-glow-blue: 0 0 30px hsl(214 63% 33% / 0.5);
+    --shadow-glow-maroon: 0 0 30px hsl(0 46% 33% / 0.5);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --sidebar-background: 38 43% 98%;
+    --sidebar-foreground: 212 53% 11%;
+    --sidebar-primary: 214 63% 33%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 38 20% 94%;
+    --sidebar-accent-foreground: 212 53% 11%;
+    --sidebar-border: 38 20% 90%;
+    --sidebar-ring: 214 63% 33%;
+  }
+
+  .dark {
+    --background: 212 53% 8%;
+    --foreground: 38 43% 96.5%;
+
+    --card: 212 53% 12%;
+    --card-foreground: 38 43% 96.5%;
+
+    --popover: 212 53% 12%;
+    --popover-foreground: 38 43% 96.5%;
+
+    --primary: 214 63% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 38 92% 58%;
+    --secondary-foreground: 212 53% 11%;
+
+    --muted: 212 30% 18%;
+    --muted-foreground: 38 20% 75%;
+
+    --accent: 0 46% 45%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 212 30% 20%;
+    --input: 212 30% 20%;
+    --ring: 214 63% 45%;
+
+    --gradient-primary: linear-gradient(135deg, #2a6bb8, #f6a21e);
+    --gradient-hero: linear-gradient(180deg, hsl(214 63% 33% / 0.15), hsl(212 53% 8%));
+    --shadow-elegant: 0 10px 30px -10px hsl(214 63% 33% / 0.3);
+    --shadow-glow-gold: 0 0 30px hsl(38 92% 54% / 0.5);
+    --shadow-glow-blue: 0 0 30px hsl(214 63% 45% / 0.5);
+    --shadow-glow-maroon: 0 0 30px hsl(0 46% 45% / 0.5);
+
+    --sidebar-background: 212 53% 10%;
+    --sidebar-foreground: 38 43% 96.5%;
+    --sidebar-primary: 214 63% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 212 30% 18%;
+    --sidebar-accent-foreground: 38 43% 96.5%;
+    --sidebar-border: 212 30% 20%;
+    --sidebar-ring: 214 63% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    line-height: 1.65;
+  }
+
+  /* Premium type hierarchy: more air */
+  h1, .text-hero {
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+  h2, .section-title {
+    letter-spacing: 0.01em;
+  }
+  .chapter-title {
+    font-variant: small-caps;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+}
+
+@layer utilities {
+  .hover-glow-gold {
+    transition: var(--transition-smooth);
+  }
+  .hover-glow-gold:hover {
+    filter: drop-shadow(var(--shadow-glow-gold));
+  }
+  
+  .hover-glow-blue {
+    transition: var(--transition-smooth);
+  }
+  .hover-glow-blue:hover {
+    filter: drop-shadow(var(--shadow-glow-blue));
+  }
+  
+  .hover-glow-maroon {
+    transition: var(--transition-smooth);
+  }
+  .hover-glow-maroon:hover {
+    filter: drop-shadow(var(--shadow-glow-maroon));
+  }
+
+  /* WOW factor - premium effects */
+  .animate-delay-100 { animation-delay: 100ms; }
+  .animate-delay-200 { animation-delay: 200ms; }
+  .animate-delay-300 { animation-delay: 300ms; }
+  .animate-delay-400 { animation-delay: 400ms; }
+  .animate-delay-500 { animation-delay: 500ms; }
+  
+  .gradient-text {
+    background: linear-gradient(135deg, #1F4C8A 0%, #F6A21E 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glass-card {
+    background: linear-gradient(135deg, hsl(38 43% 96.5% / 0.9) 0%, hsl(38 43% 98% / 0.7) 100%);
+    backdrop-filter: blur(12px);
+  }
+
+  .hero-mesh {
+    background-image: 
+      radial-gradient(at 40% 20%, hsl(214 63% 33% / 0.08) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, hsl(38 92% 54% / 0.06) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, hsl(214 63% 33% / 0.05) 0px, transparent 50%);
+  }
+
+  /* Campus Arrival: very light paper grain (material feel) */
+  .grain-paper {
+    position: relative;
+  }
+  .grain-paper::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+
+  /* Ambient drift: very slow gradient movement (15s loop) */
+  @keyframes ambient-drift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  .animate-ambient-drift {
+    animation: ambient-drift 15s ease-in-out infinite;
+  }
+
+  /* Reduced motion: disable ambient drift */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-ambient-drift {
+      animation: none;
+    }
+  }
+
+  /* Marquee keyframes (used by IIMsMarquee) – keep in global CSS so animation runs */
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      animation: none !important;
+    }
+  }
+}
