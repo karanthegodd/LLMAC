@@ -24,7 +24,7 @@ const RegistrationConfirmation = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
-      <main className="flex-1 pt-20">
+      <main className="flex-1 pt-12">
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-3xl mx-auto">
             {/* Success Header */}

@@ -1,236 +1,55 @@
 import { Link } from "react-router-dom";
-import { motion, useReducedMotion, useInView, useScroll, useTransform } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SectionHeader } from "@/components/SectionHeader";
 import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
 import { IIMsMarquee } from "@/components/IIMsMarquee";
 import { SponsorsCarousel } from "@/components/sponsors/SponsorsCarousel";
-import { SectionHeader } from "@/components/SectionHeader";
-import { containerStagger, staggerChildFadeUp, fadeUpBlur, EASING, DURATIONS } from "@/lib/motion";
+import { EASING, fadeUp, fadeIn, staggerChildFadeUp, containerStagger } from "@/lib/motion";
 import {
   Users,
   GraduationCap,
   Calendar,
-  Infinity,
-  Sparkles,
   Link2,
   TrendingUp,
   Target,
-  UserPlus,
-  Briefcase,
-  Award,
-  Handshake,
-  MessageCircle,
-  Mic2,
-  Heart,
-  Zap,
   MapPin,
+  Briefcase,
+  Lightbulb,
+  Heart,
+  Building2,
 } from "lucide-react";
+
+const programsInitiatives = [
+  { icon: Briefcase, title: "Professional Networking & Mentorship" },
+  { icon: Lightbulb, title: "Industry Panels & Thought Leadership" },
+  { icon: Heart, title: "Community & Family Engagement", desc: "Social gatherings, cultural celebrations, and family." },
+  { icon: Building2, title: "Alumni Business & Referral Ecosystem", desc: "A trusted directory and referral network to support alumni-led businesses and professional services." },
+];
+
+const engageEvents = [
+  { title: "Annual Gala & Awards Night", monthYear: "March 2026", location: "Toronto" },
+  { title: "Leadership Summit", monthYear: "May 2026", location: "Vancouver" },
+  { title: "Summer Networking Mixer", monthYear: "July 2026", location: "Calgary" },
+];
+
+const cityChapters = ["Toronto", "Vancouver", "Calgary", "Others"];
+
+const uniteGrowImpact = [
+  { icon: Link2, title: "Unite", desc: "Bringing IIM alumni across Canada together through events, chapters, and partnerships." },
+  { icon: TrendingUp, title: "Grow", desc: "Professional development, mentorship, and career resources for our members." },
+  { icon: Target, title: "Impact", desc: "Driving positive change in industry and society through our collective expertise." },
+];
 
 export default function Home() {
   const reducedMotion = useReducedMotion() ?? false;
-  const { scrollY } = useScroll();
-  const heroBgY = useTransform(scrollY, [0, 600], [0, 80]);
-  const heroHeadline = "Where Leadership, Excellence, and Community Converge.";
-  const heroWords = heroHeadline.split(" ");
   const upcomingEvents = [
-    { date: "Nov 15", title: "Annual Gala & Awards Night", location: "Vancouver" },
-    { date: "Dec 02", title: "Holiday Networking Mixer", location: "Toronto" },
-    { date: "Jan 18", title: "New Year Kickoff", location: "Calgary" },
-  ];
-
-  const cities = [
-    "Toronto",
-    "Vancouver",
-    "Montreal",
-    "Calgary",
-    "Ottawa",
-    "Edmonton",
-  ];
-
-  const stats = [
-    { value: "520+", label: "Members", icon: Users },
-    { value: "21", label: "IIMs", icon: GraduationCap },
-    { value: "20+", label: "Years of Impact", icon: Sparkles },
-    { value: "6+", label: "Events", icon: Calendar },
-    { value: "∞", label: "Impact", icon: Infinity },
-  ];
-  const statDelayClasses = ["animate-delay-100", "animate-delay-200", "animate-delay-300", "animate-delay-400", "animate-delay-500"];
-
-  function MotionCtaButton({ reducedMotion }: { reducedMotion: boolean }) {
-    const [hover, setHover] = useState(false);
-    return (
-      <motion.span
-        className="relative inline-block bg-secondary text-secondary-foreground font-semibold text-base px-8 py-6 rounded-lg overflow-hidden cursor-pointer"
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        whileHover={reducedMotion ? {} : { scale: 1.03 }}
-        whileTap={{ scale: 0.98 }}
-        transition={{ type: "spring", stiffness: 400, damping: 17 }}
-      >
-        <span className="relative z-10">Join IIMAC & Grow Your Network</span>
-        {!reducedMotion && (
-          <motion.span
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none"
-            initial={{ x: "-100%" }}
-            animate={{ x: hover ? "200%" : "-100%" }}
-            transition={{ duration: 0.5 }}
-          />
-        )}
-      </motion.span>
-    );
-  }
-
-  function MotionCard({
-    children,
-    reducedMotion,
-    className = "",
-  }: {
-    children: React.ReactNode;
-    reducedMotion: boolean;
-    className?: string;
-  }) {
-    return (
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-40px" }}
-        variants={staggerChildFadeUp(reducedMotion, 20)}
-        whileHover={
-          reducedMotion
-            ? {}
-            : {
-                y: -6,
-                boxShadow: "0 12px 40px -12px hsl(214 63% 33% / 0.15)",
-                borderColor: "hsl(var(--primary) / 0.35)",
-              }
-        }
-        transition={{ duration: DURATIONS.normal }}
-        className="border border-border rounded-xl bg-card text-card-foreground shadow-soft hover:shadow-card transition-shadow duration-300"
-      >
-        <Card className={`border-0 shadow-none bg-transparent ${className}`}>{children}</Card>
-      </motion.div>
-    );
-  }
-
-  function StatBlock({
-    stat,
-    index,
-    reducedMotion,
-  }: {
-    stat: (typeof stats)[0];
-    index: number;
-    reducedMotion: boolean;
-  }) {
-    const ref = useRef<HTMLDivElement>(null);
-    const inView = useInView(ref, { once: true, margin: "-20px" });
-    const numMatch = stat.value.match(/^(\d+)/);
-    const num = numMatch ? parseInt(numMatch[1], 10) : null;
-    const suffix = stat.value.replace(/^\d+/, "") || "";
-    const [display, setDisplay] = useState(reducedMotion ? stat.value : (num != null ? "0" + suffix : stat.value));
-
-    useEffect(() => {
-      if (!inView || reducedMotion || num == null) {
-        if (inView && num != null) setDisplay(stat.value);
-        return;
-      }
-      const duration = 1200;
-      const start = Date.now();
-      const tick = () => {
-        const elapsed = Date.now() - start;
-        const t = Math.min(elapsed / duration, 1);
-        const eased = 1 - (1 - t) * (1 - t);
-        const current = Math.round(eased * num);
-        setDisplay(current + suffix);
-        if (t < 1) requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
-    }, [inView, reducedMotion, num, suffix, stat.value]);
-
-    return (
-      <motion.div
-        ref={ref}
-        className="text-center p-4 md:p-6"
-        variants={staggerChildFadeUp(reducedMotion, 20)}
-        whileHover={reducedMotion ? {} : { scale: 1.05 }}
-        transition={{ duration: DURATIONS.normal }}
-      >
-        <motion.div
-          className="flex justify-center mb-2"
-          variants={staggerChildFadeUp(reducedMotion, 8)}
-        >
-          <stat.icon className="h-8 w-8 text-primary" />
-        </motion.div>
-        <div className="text-3xl md:text-4xl font-bold text-primary">{display}</div>
-        <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
-      </motion.div>
-    );
-  }
-
-  const uniteGrowImpact = [
-    {
-      title: "Unite",
-      icon: Link2,
-      desc: "Connect with fellow IIM graduates across Canada and build lasting professional and personal relationships.",
-    },
-    {
-      title: "Grow",
-      icon: TrendingUp,
-      desc: "Access mentorship, career resources, and development opportunities designed to accelerate your journey.",
-    },
-    {
-      title: "Impact",
-      icon: Target,
-      desc: "Give back through thought leadership, community initiatives, and support for the next generation of leaders.",
-    },
-  ];
-
-  const whoWeServe = [
-    {
-      title: "New Alumni & Newcomers",
-      icon: UserPlus,
-      desc: "Settle in with guidance, networking, and resources tailored to those new to Canada or early in their careers.",
-    },
-    {
-      title: "Experienced Professionals",
-      icon: Briefcase,
-      desc: "Expand your influence through peer networks, industry forums, and leadership opportunities.",
-    },
-    {
-      title: "Senior Leaders & Mentors",
-      icon: Award,
-      desc: "Share your expertise and shape the community as a mentor, speaker, or volunteer leader.",
-    },
-    {
-      title: "Sponsors & Partners",
-      icon: Handshake,
-      desc: "Engage with top-tier talent and build visibility within Canada's premier management alumni network.",
-    },
-  ];
-
-  const whatWeDo = [
-    {
-      title: "Professional Networking & Mentorship",
-      icon: MessageCircle,
-      desc: "Structured programs connecting members for mentorship, referrals, and career growth.",
-    },
-    {
-      title: "Industry Forums & Thought Leadership",
-      icon: Mic2,
-      desc: "Panels, talks, and forums where alumni share insights and shape industry conversations.",
-    },
-    {
-      title: "Community & Family Engagement",
-      icon: Heart,
-      desc: "Social events, family gatherings, and community initiatives that strengthen bonds beyond the boardroom.",
-    },
-    {
-      title: "Alumni Success & Referral Ecosystem",
-      icon: Zap,
-      desc: "A trusted network for job referrals, collaborations, and support for alumni-led ventures.",
-    },
+    { date: "16 November 2025", title: "Annual Gala & Awards Night", location: "Vancouver", desc: "An evening celebrating excellence and connections across the IIMAC community.", image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80" },
+    { date: "02 December 2025", title: "Holiday Networking Mixer", location: "Toronto", desc: "Connect with fellow alumni in a relaxed seasonal setting.", image: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=600&q=80" },
+    { date: "18 January 2026", title: "New Year Kickoff", location: "Calgary", desc: "Start the year with insights and networking across chapters.", image: "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=600&q=80" },
+    { date: "22 February 2026", title: "Leadership Forum", location: "Montreal", desc: "Panels and workshops on leadership and industry trends.", image: "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=600&q=80" },
   ];
 
   return (
@@ -244,396 +63,282 @@ export default function Home() {
       </motion.div>
 
       <main className="flex-1">
-        {/* Campus Arrival Hero: full-height lobby feel + first-scroll parallax */}
+        {/* Hero: full-bleed image with overlay (template style) */}
         <section
-          className="relative min-h-[90vh] flex items-center overflow-hidden bg-gradient-hero"
+          className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-[hsl(var(--deep-navy))]"
           aria-labelledby="hero-heading"
         >
-          {/* Layer A: ambient light gradient drift (parallax: moves slower on scroll) */}
-          {!reducedMotion && (
-            <motion.div
-              className="absolute inset-0 opacity-[0.6] pointer-events-none animate-ambient-drift"
-              style={{
-                backgroundImage: "radial-gradient(ellipse 90% 70% at 50% 40%, hsl(214 63% 33% / 0.06) 0%, transparent 55%), radial-gradient(ellipse 70% 80% at 80% 60%, hsl(38 92% 54% / 0.04) 0%, transparent 50%)",
-                backgroundSize: "200% 200%",
-                y: heroBgY,
-              }}
-              aria-hidden
+          <div className="absolute inset-0">
+            <img
+              src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1600&q=85"
+              alt=""
+              className="w-full h-full object-cover scale-105"
             />
-          )}
-          {/* Layer B: subtle architectural grid + vignette (parallax) */}
-          <motion.div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              backgroundImage: `
-                linear-gradient(to right, hsl(214 63% 33% / 0.03) 1px, transparent 1px),
-                linear-gradient(to bottom, hsl(214 63% 33% / 0.03) 1px, transparent 1px)
-              `,
-              backgroundSize: "48px 48px",
-              maskImage: "radial-gradient(ellipse 85% 75% at 50% 50%, black 30%, transparent 75%)",
-              WebkitMaskImage: "radial-gradient(ellipse 85% 75% at 50% 50%, black 30%, transparent 75%)",
-              y: reducedMotion ? 0 : heroBgY,
-            }}
-            aria-hidden
-          />
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background: "radial-gradient(ellipse 100% 100% at 50% 50%, transparent 50%, hsl(0 0% 0% / 0.03) 100%)",
-            }}
-          />
-
-          <motion.div
-            className="container mx-auto px-4 relative z-10 py-16 md:py-24"
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-16 items-center max-w-6xl mx-auto">
-              {/* Layer C: content */}
-              <div className="space-y-8 text-center lg:text-left">
-                <motion.p
-                  className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: reducedMotion ? 0 : 0.5 }}
-                >
-                  A premier Canadian professional network uniting alumni of the Indian Institutes of Management (IIMs)
-                </motion.p>
-                <h1 id="hero-heading" className="text-hero text-4xl md:text-5xl lg:text-6xl font-playfair font-bold text-foreground leading-[1.12]">
-                  <span className="flex flex-wrap justify-center lg:justify-start gap-x-2">
-                    {heroWords.map((word, i) => (
-                      <motion.span
-                        key={i}
-                        className="inline-block"
-                        initial={{ opacity: 0, filter: reducedMotion ? "none" : "blur(6px)" }}
-                        animate={{ opacity: 1, filter: "blur(0px)" }}
-                        transition={{
-                          duration: reducedMotion ? 0 : 0.4,
-                          delay: reducedMotion ? 0 : 0.08 + i * 0.05,
-                          ease: EASING.easeOut,
-                        }}
-                      >
-                        {word}
-                      </motion.span>
-                    ))}
-                  </span>
-                </h1>
-                <motion.p
-                  className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: reducedMotion ? 0 : 0.5, delay: 0.25 }}
-                >
-                  IIM Alumni Canada (IIMAC) brings together distinguished graduates of Indian Institutes of Management residing across Canada – fostering meaningful professional connections, enriching careers, and driving positive impact across industry and society.
-                </motion.p>
-                <motion.div
-                  className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: reducedMotion ? 0 : 0.5, delay: 0.35 }}
-                >
-                  <Link to="/register">
-                    <Button
-                      size="lg"
-                      className="w-full sm:w-auto rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground shadow-soft hover:shadow-card hover:-translate-y-0.5 transition-all duration-300"
-                    >
-                      Join IIMAC
-                    </Button>
-                  </Link>
-                  <Link to="/partners">
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      className="w-full sm:w-auto rounded-lg border-2 hover:border-primary/50 hover:shadow-soft transition-all duration-300"
-                    >
-                      Partner with IIMAC
-                    </Button>
-                  </Link>
-                </motion.div>
-                <motion.p
-                  className="text-sm text-muted-foreground"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: reducedMotion ? 0 : 0.4, delay: 0.45 }}
-                >
-                  Already a member?{" "}
-                  <Link to="/auth" className="text-primary hover:underline font-medium">
-                    Sign in to your account
-                  </Link>
-                </motion.p>
-              </div>
-
-              {/* Window into campus: framed image */}
-              <motion.div
-                className="relative hidden lg:block"
-                initial={{ opacity: 0 }}
+            <div className="absolute inset-0 bg-gradient-to-b from-[hsl(var(--primary))]/85 via-[hsl(var(--primary))]/75 to-[hsl(var(--deep-navy))]/95" aria-hidden="true" />
+          </div>
+          <div className="container relative z-10 mx-auto px-4 py-16 md:py-24 text-center">
+            <motion.p
+              className="text-primary-foreground/90 text-xs md:text-sm font-semibold uppercase tracking-[0.18em] mb-4"
+              initial={{ opacity: reducedMotion ? 1 : 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: reducedMotion ? 0 : 0.4, delay: 0.2 }}
+            >
+              A premier Canadian professional network uniting alumni of the Indian Institutes of Management (IIMs).
+            </motion.p>
+            <h1
+              id="hero-heading"
+              className="font-playfair font-bold text-primary-foreground leading-[1.08] text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl max-w-4xl mx-auto"
+            >
+              <motion.span
+                className="block"
+                initial={{ opacity: reducedMotion ? 1 : 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: reducedMotion ? 0 : 0.6, delay: 0.2 }}
+                transition={{ duration: reducedMotion ? 0 : 0.5, ease: EASING.easeOut }}
               >
-                <div className="relative rounded-2xl overflow-hidden border border-border/80 bg-card shadow-card" style={{ boxShadow: "0 8px 32px -8px hsl(214 63% 33% / 0.12)" }}>
-                  <div className="aspect-[4/3] relative">
-                    <img
-                      src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80"
-                      alt="Professionals networking"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </motion.div>
+                Where Leadership, Excellence, and Community{" "}
+                <span className="text-secondary">Converge.</span>
+              </motion.span>
+            </h1>
+            <motion.p
+              className="mt-5 md:mt-6 text-base md:text-lg text-primary-foreground/90 max-w-2xl mx-auto leading-relaxed"
+              initial={{ opacity: reducedMotion ? 1 : 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: reducedMotion ? 0 : 0.5, delay: 0.15 }}
+            >
+              IIM Alumni Canada (IIMAC) brings together distinguished graduates residing across Canada — fostering meaningful connections, advancing careers, and driving positive impact.
+            </motion.p>
+            <motion.div
+              className="mt-8 flex flex-col sm:flex-row gap-4 justify-center"
+              initial={{ opacity: reducedMotion ? 1 : 0, y: reducedMotion ? 0 : 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: reducedMotion ? 0 : 0.45, delay: 0.25 }}
+            >
+              <Link to="/register">
+                <Button size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/90 rounded-lg px-6">
+                  Become a Member
+                </Button>
+              </Link>
+              <Link to="/partners">
+                <Button size="lg" variant="outline" className="border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 rounded-lg px-6">
+                  Partner with IIMAC
+                </Button>
+              </Link>
+            </motion.div>
+            <p className="mt-4 text-sm text-primary-foreground/80">
+              Already a member?{" "}
+              <Link to="/auth" className="text-secondary font-medium hover:underline underline-offset-2">Sign in</Link>
+            </p>
+          </div>
         </section>
 
-        {/* 2. Key Stats */}
-        <section className="py-20 md:py-28 bg-background border-y border-border/60" aria-label="Key statistics">
+        {/* Metrics strip - bold blue bar */}
+        <section className="bg-primary text-primary-foreground border-y-2 border-primary-foreground/20 shadow-lg" aria-label="Key metrics">
+          <div className="container mx-auto px-4 py-8 md:py-10">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 max-w-4xl mx-auto">
+              {[
+                { value: "520+", label: "Alumni Members", icon: Users },
+                { value: "6+", label: "Chapters", icon: MapPin },
+                { value: "20+", label: "Annual Events", icon: Calendar },
+                { value: "21", label: "IIMs Represented", icon: GraduationCap },
+              ].map((item, i) => (
+                <div key={i} className="flex flex-col md:flex-row items-center gap-2 text-center md:text-left">
+                  <item.icon className="h-7 w-7 md:h-8 md:w-8 text-secondary shrink-0" />
+                  <div>
+                    <div className="text-xl md:text-2xl font-bold text-primary-foreground">{item.value}</div>
+                    <div className="text-xs md:text-sm text-primary-foreground/90">{item.label}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA band - join the community */}
+        <section className="bg-primary text-primary-foreground py-12 md:py-14" aria-label="Join IIMAC">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-2xl md:text-3xl font-bold text-primary-foreground mb-2">Join 500+ IIM alumni across Canada</h2>
+            <p className="text-primary-foreground/90 max-w-xl mx-auto mb-6">Connect, grow, and create impact with your community.</p>
+            <Link to="/register">
+              <Button size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/90 rounded-lg px-8 text-base font-semibold">
+                Become a Member
+              </Button>
+            </Link>
+          </div>
+        </section>
+
+        {/* Unite. Grow. Impact. - three cards (template pillar section) */}
+        <section className="section-padding bg-muted/50 border-y border-border" aria-labelledby="ugi-heading">
           <div className="container mx-auto px-4">
+            <SectionHeader id="ugi-heading" title="Unite. Grow. Impact." subtitle="Our pillars for the IIMAC community." />
             <motion.div
-              className="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-5xl mx-auto"
-              variants={containerStagger(reducedMotion, { staggerChildren: 0.08, delayChildren: 0.1 })}
+              className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto"
+              variants={containerStagger(reducedMotion, { staggerChildren: 0.1 })}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, margin: "-60px" }}
+              viewport={{ once: true, margin: "-40px" }}
             >
-              {stats.map((stat, i) => (
-                <StatBlock key={i} stat={stat} index={i} reducedMotion={reducedMotion} />
+              {uniteGrowImpact.map((item, i) => (
+                <motion.div key={item.title} variants={staggerChildFadeUp(reducedMotion, 20)}>
+                  <Card className="h-full border-2 border-primary/20 hover:border-primary/40 hover:shadow-elegant transition-all duration-300 bg-card">
+                    <CardHeader>
+                      <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0 mb-2">
+                        <item.icon className="h-6 w-6" />
+                      </span>
+                      <CardTitle className="text-xl">{item.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-muted-foreground leading-relaxed">{item.desc}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
               ))}
             </motion.div>
           </div>
         </section>
 
-        {/* 3. Unite. Grow. Impact. */}
-        <section className="py-24 md:py-32 bg-muted/20" aria-labelledby="unite-heading">
+        {/* About IIMAC */}
+        <section className="section-padding bg-background border-b border-border/50" aria-labelledby="about-iimac-heading">
           <div className="container mx-auto px-4">
-            <SectionHeader id="unite-heading" title="Unite. Grow. Impact." />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              {uniteGrowImpact.map((item, i) => (
-                <MotionCard key={i} reducedMotion={reducedMotion} className="text-center">
-                  <CardHeader>
-                    <motion.div
-                      className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4"
-                      whileHover={reducedMotion ? {} : { scale: 1.05, rotate: 8 }}
-                      transition={{ duration: DURATIONS.fast }}
-                    >
-                      <item.icon className="h-7 w-7 text-primary" />
-                    </motion.div>
-                    <CardTitle className="text-xl">{item.title}</CardTitle>
-                    <CardDescription className="text-left">{item.desc}</CardDescription>
-                  </CardHeader>
-                </MotionCard>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* 4. CTA Band */}
-        <section id="cta" className="py-20 md:py-28 bg-primary text-primary-foreground text-center relative overflow-hidden" aria-labelledby="cta-heading">
-          {/* Subtle moving gradient / spotlight (disabled when reduced motion) */}
-          {!reducedMotion && (
-            <motion.div
-              className="absolute inset-0 opacity-30 pointer-events-none"
-              animate={{
-                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-              }}
-              transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-              style={{
-                backgroundImage: "radial-gradient(ellipse 80% 50% at 50% 50%, hsl(38 92% 54% / 0.4), transparent 70%)",
-                backgroundSize: "200% 200%",
-              }}
-            />
-          )}
-          <div className="container mx-auto px-4 relative z-10">
-            <motion.h2
-              id="cta-heading"
-              className="text-3xl md:text-4xl font-bold font-accent mb-4"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-              What Are You Waiting For?
-            </motion.h2>
+            <SectionHeader id="about-iimac-heading" title="About IIMAC" subtitle="The official alumni network for IIM graduates in Canada." />
             <motion.p
-              className="text-lg text-primary-foreground/90 max-w-2xl mx-auto mb-8"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
+              className="section-intro text-center"
+              variants={fadeIn(reducedMotion, { duration: 0.5 })}
+              initial="hidden"
+              whileInView="visible"
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
             >
-              Become part of a trusted alumni network built on excellence, leadership, and lifelong connections.
+              IIM Alumni Canada (IIMAC) connects members through events, chapters, and partnerships to foster professional growth and impact. We welcome alumni from all 21 Indian Institutes of Management.
             </motion.p>
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="relative inline-block"
-            >
-              <Link to="/register" className="inline-block">
-                <MotionCtaButton reducedMotion={reducedMotion} />
+            <motion.div className="flex justify-center mt-8" variants={fadeUp(reducedMotion)} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+              <Link to="/about">
+                <Button variant="outline" className="border-2 border-primary text-primary hover:bg-primary/10">Learn more about us</Button>
               </Link>
             </motion.div>
           </div>
         </section>
 
-        {/* 5. Who We Serve */}
-        <section className="py-24 md:py-32 bg-background" aria-labelledby="who-we-serve-heading">
-          <div className="container mx-auto px-4">
-            <SectionHeader
-              id="who-we-serve-heading"
-              title="Who We Serve"
-              subtitle="A community built for every stage of your professional journey."
-            />
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-              {whoWeServe.map((item, i) => (
-                <MotionCard key={i} reducedMotion={reducedMotion}>
-                  <CardHeader>
-                    <motion.div
-                      className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4"
-                      whileHover={reducedMotion ? {} : { scale: 1.05, rotate: 8 }}
-                      transition={{ duration: DURATIONS.fast }}
-                    >
-                      <item.icon className="h-6 w-6 text-primary" />
-                    </motion.div>
-                    <CardTitle className="text-lg">{item.title}</CardTitle>
-                    <CardDescription>{item.desc}</CardDescription>
-                  </CardHeader>
-                </MotionCard>
-              ))}
+        {/* How We Engage: single grey container, two columns — Programs & Initiatives left, Events + City Chapters right */}
+        <section className="section-padding bg-background" aria-labelledby="how-we-engage-heading">
+          <div className="container mx-auto px-4 max-w-5xl">
+            <SectionHeader id="how-we-engage-heading" title="How We Engage" />
+            <div className="mt-8 rounded-xl bg-muted/50 border border-border/60 shadow-sm p-6 md:p-8 lg:p-10">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 lg:gap-x-12">
+                {/* Left: Programs & Initiatives */}
+                <div>
+                  <h3 className="font-semibold text-foreground text-lg mb-4">Programs & Initiatives</h3>
+                  <div className="space-y-3">
+                    {programsInitiatives.map((item, i) => (
+                      <div
+                        key={i}
+                        className="flex gap-3 p-3 rounded-lg bg-card border border-border/50 shadow-sm"
+                      >
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border-2 border-primary/30 text-primary">
+                          <item.icon className="h-4 w-4" strokeWidth={2} />
+                        </span>
+                        <div className="min-w-0">
+                          <p className="font-semibold text-foreground text-sm">{item.title}</p>
+                          {item.desc && (
+                            <p className="text-muted-foreground text-xs mt-0.5 leading-relaxed">{item.desc}</p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Right: Upcoming Events + City Chapters */}
+                <div className="flex flex-col gap-8">
+                  <div>
+                    <h3 className="font-semibold text-foreground text-lg mb-4">Upcoming Events</h3>
+                    <div className="space-y-3">
+                      {engageEvents.map((e, i) => (
+                        <div
+                          key={i}
+                          className="flex gap-3 p-3 rounded-lg bg-card border border-border/50 shadow-sm"
+                        >
+                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border-2 border-primary/30 text-primary">
+                            <Calendar className="h-4 w-4" strokeWidth={2} />
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            <p className="font-semibold text-foreground text-sm">{e.title}</p>
+                            <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1 text-xs text-muted-foreground">
+                              <span className="flex items-center gap-1">
+                                <Calendar className="h-3 w-3" />
+                                {e.monthYear}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <MapPin className="h-3 w-3" />
+                                {e.location}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <Link to="/events" className="inline-block mt-4 text-primary font-semibold text-sm hover:underline">
+                      View all events →
+                    </Link>
+                  </div>
+
+                  <div>
+                    <h3 className="font-semibold text-foreground text-lg mb-3">City Chapters</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {cityChapters.map((city) => (
+                        <span
+                          key={city}
+                          className="inline-flex items-center gap-1.5 rounded-full bg-muted border border-border/60 px-4 py-2 text-sm font-medium text-foreground"
+                        >
+                          <MapPin className="h-3.5 w-3.5 text-primary" />
+                          {city}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* 6. Our Institutions (IIMs Marquee) */}
-        <section aria-labelledby="institutions-heading" className="pb-4">
-          <div className="container mx-auto px-4 pt-20 md:pt-24 pb-6">
-            <SectionHeader
-              id="institutions-heading"
-              title="Our Institutions"
-              subtitle="Alumni from all 21 Indian Institutes of Management."
-            />
+        {/* Our Institutions */}
+        <section aria-labelledby="institutions-heading" className="section-padding bg-background border-b border-border/50">
+          <div className="container mx-auto px-4 pb-4">
+            <SectionHeader id="institutions-heading" title="Our Institutions" subtitle="Alumni from all 21 Indian Institutes of Management." />
           </div>
           <IIMsMarquee />
         </section>
 
-        {/* 7. What We Do */}
-        <section className="py-24 md:py-32 bg-muted/20" aria-labelledby="what-we-do-heading">
+        {/* Recent Highlights */}
+        <section id="events-preview" className="section-padding bg-muted/40" aria-labelledby="highlights-heading">
           <div className="container mx-auto px-4">
-            <SectionHeader
-              id="what-we-do-heading"
-              title="What We Do"
-              subtitle="Programs and initiatives designed to create meaningful value for our members."
-            />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-              {whatWeDo.map((item, i) => (
-                <MotionCard key={i} reducedMotion={reducedMotion}>
-                  <CardHeader>
-                    <motion.div
-                      className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4"
-                      whileHover={reducedMotion ? {} : { scale: 1.05, rotate: 8 }}
-                      transition={{ duration: DURATIONS.fast }}
-                    >
-                      <item.icon className="h-6 w-6 text-primary" />
-                    </motion.div>
-                    <CardTitle className="text-xl">{item.title}</CardTitle>
-                    <CardDescription>{item.desc}</CardDescription>
-                  </CardHeader>
-                </MotionCard>
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+              <h2 id="highlights-heading" className="chapter-title text-2xl md:text-3xl font-semibold text-foreground tracking-[0.12em]">Recent Highlights</h2>
+              <Link to="/events" className="text-primary font-semibold hover:underline">See more →</Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+              {upcomingEvents.map((e, i) => (
+                <Link key={i} to="/events" className="rounded-xl border border-border bg-card overflow-hidden shadow-sm hover:shadow-card transition-all block">
+                  <div className="aspect-[4/3] overflow-hidden">
+                    <img src={e.image} alt="" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="p-4">
+                    <p className="text-xs font-semibold text-foreground/80 uppercase">{e.date}</p>
+                    <h3 className="font-semibold text-foreground text-sm mt-1 line-clamp-2">{e.title}</h3>
+                  </div>
+                </Link>
               ))}
             </div>
           </div>
         </section>
 
-        {/* 8. Upcoming Events + City Chapters */}
-        <section id="events-preview" className="py-24 md:py-32 bg-background" aria-labelledby="events-heading">
+        {/* Sponsors */}
+        <section className="section-padding bg-background border-t-2 border-border" aria-labelledby="sponsors-heading">
           <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 max-w-6xl mx-auto">
-              <div>
-                <motion.h2
-                  id="events-heading"
-                  className="chapter-title text-2xl md:text-3xl font-semibold text-foreground tracking-[0.12em] mb-8"
-                  variants={fadeUpBlur(reducedMotion, { y: 16 })}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                >
-                  Upcoming Events
-                </motion.h2>
-                <div className="space-y-3">
-                  {upcomingEvents.map((e, i) => (
-                    <motion.div
-                      key={i}
-                      className="flex gap-4 items-start p-4 rounded-xl border border-border bg-card shadow-soft hover:shadow-card hover:border-primary/30 transition-all duration-300 group"
-                      variants={fadeUpBlur(reducedMotion, { y: 12 })}
-                      initial="hidden"
-                      whileInView="visible"
-                      viewport={{ once: true, margin: "-20px" }}
-                      whileHover={reducedMotion ? {} : { y: -2 }}
-                    >
-                      <div className="shrink-0 w-14 h-14 rounded-lg bg-primary/10 flex flex-col items-center justify-center text-primary font-bold text-sm">
-                        {e.date}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-foreground">{e.title}</p>
-                        <p className="text-sm text-muted-foreground flex items-center gap-1">
-                          <MapPin className="h-4 w-4 shrink-0" /> {e.location}
-                        </p>
-                      </div>
-                      <span className="text-primary opacity-0 group-hover:opacity-100 transition-opacity -translate-x-1 group-hover:translate-x-0 transition-transform">→</span>
-                    </motion.div>
-                  ))}
-                </div>
-                <Link to="/events" className="inline-block mt-6 text-primary font-medium hover:underline">
-                  View all events →
-                </Link>
-              </div>
-
-              <div>
-                <motion.h2
-                  className="chapter-title text-2xl md:text-3xl font-semibold text-foreground tracking-[0.12em] mb-2"
-                  variants={fadeUpBlur(reducedMotion, { y: 16 })}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                >
-                  City Chapters
-                </motion.h2>
-                <motion.p
-                  className="text-muted-foreground mb-8"
-                  variants={fadeUpBlur(reducedMotion, { y: 12 })}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                >
-                  IIMAC has active chapters across major Canadian cities, ensuring alumni stay connected wherever they are.
-                </motion.p>
-                <div className="flex flex-wrap gap-3">
-                  {cities.map((city) => (
-                    <Link
-                      key={city}
-                      to="/events"
-                      className="inline-flex items-center px-4 py-2.5 rounded-full border border-border bg-card text-foreground font-medium shadow-soft hover:border-primary/50 hover:shadow-card hover:-translate-y-0.5 transition-all duration-300"
-                    >
-                      {city}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 9. Our Proud Sponsors */}
-        <section className="py-24 md:py-32 bg-secondary/10 border-t border-border/60" aria-labelledby="sponsors-heading">
-          <div className="container mx-auto px-4">
-            <SectionHeader
-              id="sponsors-heading"
-              title="Our Proud Sponsors"
-              subtitle="Together we unite, grow, and make an impact."
-            />
+            <SectionHeader id="sponsors-heading" title="Our Proud Sponsors" subtitle="Together we unite, grow, and make an impact." />
             <SponsorsCarousel />
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+            <div className="flex flex-wrap gap-3 justify-center mt-8">
               <Link to="/partners">
-                <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                  View All Sponsors
-                </Button>
+                <Button className="bg-primary text-primary-foreground hover:bg-primary/90">View All Sponsors</Button>
               </Link>
               <Link to="/partners">
                 <Button variant="outline">Partner with IIMAC</Button>

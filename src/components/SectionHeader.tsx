@@ -17,7 +17,7 @@ export function SectionHeader({ id, title, subtitle, className = "" }: SectionHe
   const reduced = useReducedMotion() ?? false;
 
   return (
-    <div className={`text-center space-y-4 mb-14 ${className}`}>
+    <div className={`text-center space-y-2 mb-6 ${className}`}>
       <motion.h2
         id={id}
         className="chapter-title text-2xl md:text-3xl font-semibold text-foreground tracking-[0.12em] inline-block"
