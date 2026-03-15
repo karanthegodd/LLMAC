@@ -41,7 +41,7 @@ export function IIMsMarquee() {
             title={`${iim.name} - Click to add info`}
           >
             <img
-              src={`https://www.google.com/s2/favicons?domain=${iim.domain}&sz=48`}
+              src={"logo" in iim && iim.logo ? iim.logo : `https://www.google.com/s2/favicons?domain=${iim.domain}&sz=48`}
               alt=""
               className="h-12 w-12 object-contain"
               loading="lazy"

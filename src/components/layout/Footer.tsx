@@ -20,7 +20,7 @@ export const Footer = () => {
                 <img
                   src={logo}
                   alt="IIMAC - Indian Institute of Management Alumni Canada"
-                  className="h-14 md:h-16 w-auto brightness-0 invert"
+                  className="h-14 md:h-16 w-auto max-w-[180px] object-contain"
                 />
               </Link>
               <p className="text-sm text-primary-foreground leading-relaxed max-w-xs">

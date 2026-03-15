@@ -4,14 +4,11 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import logo from "@/assets/logo-iimac.png";
 
-const leftLinks = [
+const navItems = [
   { path: "/", label: "Home" },
   { path: "/about", label: "About Us" },
   { path: "/events", label: "Events" },
   { path: "/membership", label: "Membership" },
-];
-
-const rightLinks = [
   { path: "/partners", label: "Partners" },
   { path: "/distinguished-alumni", label: "Alumni" },
   { path: "/contact", label: "Contact Us" },
@@ -33,7 +30,7 @@ export const Navigation = () => {
         <div className="flex h-16 md:h-20 items-center justify-between gap-4">
           {/* Left links (desktop) */}
           <div className="hidden md:flex items-center gap-1 flex-1 justify-end pr-4">
-            {leftLinks.map((link) => (
+            {navItems.slice(0, 4).map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
@@ -64,7 +61,7 @@ export const Navigation = () => {
 
           {/* Right links + Login (desktop) */}
           <div className="hidden md:flex items-center gap-1 flex-1 pl-4 justify-start">
-            {rightLinks.map((link) => (
+            {navItems.slice(4).map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
@@ -104,7 +101,7 @@ export const Navigation = () => {
 
         {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-border space-y-1">
-            {[...leftLinks, ...rightLinks].map((link) => (
+            {navItems.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
@@ -114,6 +111,13 @@ export const Navigation = () => {
                 {link.label}
               </Link>
             ))}
+            <Link
+              to="/auth"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-4 py-2 rounded-md hover:bg-muted/50"
+            >
+              Login
+            </Link>
           </div>
         )}
       </div>
