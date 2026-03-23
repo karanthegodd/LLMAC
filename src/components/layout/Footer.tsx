@@ -5,12 +5,11 @@ import { SponsorsCarousel } from "@/components/sponsors/SponsorsCarousel";
 
 export const Footer = () => {
   const location = useLocation();
-  const isPartnersPage = location.pathname === "/partners";
-  const isHomePage = location.pathname === "/";
+  const isPartnersPage = location.pathname.startsWith("/partners");
 
   return (
     <>
-      {!isPartnersPage && !isHomePage && <SponsorsCarousel />}
+      {!isPartnersPage && <SponsorsCarousel />}
       <footer className="border-t bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 py-12 md:py-16">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-12">
